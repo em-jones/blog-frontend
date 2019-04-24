@@ -27,7 +27,7 @@
       'md:bg-transparent', 'z-20']" ref="navContent" id="nav-content">
         <ul class="list-reset lg:flex justify-end flex-1 items-center">
           <li v-for="route in routes" :class="`mr-${routeCount}`">
-            <router-link class="inline-block py-2 px-4 text-black font-bold no-underline" :to="route.path">
+            <router-link @click.native="toggleNav()" class="inline-block py-2 px-4 text-black font-bold no-underline" :to="route.path">
               {{route.alias}}
             </router-link>
           </li>
@@ -63,6 +63,7 @@ export default class NavBar extends Vue {
   public routes: {name: string, path: string, alias: string}[] = [];
 
   toggleNav() {
+    console.log('toggled');
     this.hidden = !this.hidden;
   };
 
