@@ -11,7 +11,7 @@
 
       <div class="pl-4">
         <router-link to="/" class="text-black text-base no-underline hover:no-underline font-extrabold text-xl">
-          Minimal Blog
+          Agravic Development
         </router-link>
       </div>
 
@@ -44,15 +44,15 @@
 </template>
 
 <script lang="ts">
-import {Route} from 'vue-router';
+  import {Route} from "vue-router";
+  import GlobalEvents from "vue-global-events";
+  import {Component, Prop, Vue} from "vue-property-decorator";
 
-const h: any = document.documentElement,
+  const h: any = document.documentElement,
         b = document.body,
         st = 'scrollTop',
         sh = 'scrollHeight';
 let scrollpos = window.scrollY;
-import GlobalEvents from 'vue-global-events';
-import { Component, Prop, Vue } from 'vue-property-decorator';
   @Component({
     components: {GlobalEvents}
   })
