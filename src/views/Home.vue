@@ -3,12 +3,8 @@
   <div>
     <Hero>
       <div class="container max-w-xl mx-auto text-center">
-        <h1 class="text-2xl md:text-4xl text-center text-grey-lightest mb-3 ">Buzz 2.0.1</h1>
-        <p class="text-md md:text-lg text-center text-white ">Agravic</p>
-
-        <router-link to="portfolio" class="mt-6 inline-block bg-white text-black no-underline px-4 py-3 shadow-lg">
-          Projects
-        </router-link>
+        <h1 class="text-2xl md:text-4xl text-center text-black mb-3 ">Buzz {{version}}</h1>
+        <p class="text-l md:text-lg text-center text-black ">A Dev blog - lite</p>
       </div>
     </Hero>
     <!-- /hero -->
@@ -16,31 +12,15 @@
     <!-- home content -->
     <div class="w-full px-6 py-12 bg-white">
       <div class="container max-w-xl mx-auto text-center pb-10">
-
-        <h3 class="text-3xl md:text-4xl text-center max-w-md mx-auto text-grey-darkest mb-12">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-        </h3>
-
-        <a href="#" class="bg-black text-white px-4 py-3 no-underline">Browse our products</a>
-
+        <router-link to="portfolio" class="bg-black text-white px-4 py-3 no-underline">Portfolio</router-link>
       </div>
-
-      <div class="container max-w-xl mx-auto text-center flex flex-wrap items-start md:flex-no-wrap">
-
-        <PostStub :id="2"></PostStub>
-
-      </div>
+      <CenteredQuote></CenteredQuote>
+      <PostStubs topic="js"></PostStubs>
+      <PostStubs topic="vue"></PostStubs>
+      <PostStubs topic="angular"></PostStubs>
+      <PostStubs topic="react"></PostStubs>
     </div>
     <div class="w-full px-6 py-12 bg-white">
-      <div class="container max-w-xl mx-auto text-center pb-10">
-
-        <h3 class="text-3xl md:text-4xl text-center max-w-md mx-auto text-grey-darkest mb-12">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-        </h3>
-
-        <a href="#" class="bg-black text-white px-4 py-3 no-underline">Browse our products</a>
-
-      </div>
 
       <div class="container max-w-xl mx-auto text-center flex flex-wrap items-start md:flex-no-wrap">
 
@@ -76,18 +56,23 @@
 </template>
 
 <script lang="ts">
-  import {Component, Vue} from "vue-property-decorator";
-  import Container from "@/components/Container.vue";
-  import {EVENTS} from "@/store";
-  import Hero from "@/components/Hero.vue";
-  import PostStub from "@/components/PostStub.vue";
+  import {Component, Vue} from 'vue-property-decorator';
+  import Container from '@/components/Container.vue';
+  import Hero from '@/components/Hero.vue';
+  import {EVENTS} from '@/events';
+  import CenteredQuote from '@/components/CenteredQuote.vue';
+  import PostStubs from '@/components/PostStubs.vue';
+  import {Getter} from 'vuex-class';
+  import {s} from '@/symbols';
 
   @Component({
-  components: {
-    Container, Hero, PostStub
-  },
-})
+    components: {
+      Container, Hero, PostStubs, CenteredQuote,
+    },
+
+  })
   export default class Home extends Vue {
+    @Getter(s.app.version) version!: number | string;
     mounted() {
       this.$store.commit(EVENTS.LOADED.HOME);
     }

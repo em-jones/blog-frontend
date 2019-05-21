@@ -8,11 +8,11 @@
 </template>
 
 <script lang="ts">
-    import {Component, Prop, Vue} from "vue-property-decorator";
-    import {Tag} from "@/lib/CmsService";
+    import {Component, Prop, Vue} from 'vue-property-decorator';
+    import {Tag} from '@/lib/CmsService';
 
     @Component({
-        name: "TagList"
+        name: 'TagList',
     })
     export default class TagList extends Vue {
         @Prop()

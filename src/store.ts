@@ -1,9 +1,15 @@
 import Vue from 'vue';
-import Vuex from 'vuex';
+import Vuex, {GetterTree} from 'vuex';
 import {PostModel} from '@/lib/models/PostModel';
-import {pageLoad} from '@/plugins';
-import {Category, Item, PostCategory, Tag} from '@/lib/CmsService';
+import {pageLoad, Response} from '@/plugins';
+import {Category, cmsService, Item, PostCategory, Tag} from '@/lib/CmsService';
+import {s} from '@/symbols';
+import {EVENTS} from '@/events';
 
+export enum Template {
+    BASE,
+    ACCESSIBLE,
+}
 export enum Page {
   HOME = '[Page] Home',
   POST = '[Page] Post',
@@ -14,19 +20,21 @@ export interface RootState extends CmsData {
   page: number;
   postPerPage: number;
   currentPage?: Page;
-  post: number;
+    post: PostModel;
+    template: Template;
+    version: string;
 }
 
 export interface CmsData {
   blog: {
-    posts: { [id: number]: PostModel[] };
+      posts: { [id: number]: PostModel };
     categories: { [id: number]: PostCategory };
   };
   portfolio: {
     items: { [id: number]: Item };
     tags: { [id: number]: Tag };
     categories: { [id: number]: Category };
-  }
+  };
 }
 
 const state: RootState = {
@@ -34,33 +42,54 @@ const state: RootState = {
   blog: {posts: {}, categories: {}},
   page: 1,
   postPerPage: 1,
-  post: 0,
+    post: {
+        id: -1,
+        user_id: -1,
+        content: '',
+        author_email: '',
+        categories: '',
+        content_html: '',
+        created_at: '',
+        excerpt: '',
+        metadata: null,
+        post_categories: [],
+        post_user: {
+            id: -1,
+            activated_at: null,
+            created_at: '',
+            deleted_at: null,
+            email: '',
+            first_name: '',
+            is_activated: false,
+            is_superuser: false,
+            last_login: '',
+            last_name: '',
+            login: '',
+            permissions: '',
+            role_id: -1,
+            updated_at: '',
+        },
+        published: false,
+        published_at: null,
+        slug: '',
+        title: '',
+        updated_at: '',
+    },
+    template: Template.BASE,
+    version: '2.0.1',
 };
 
-export const s = {
-  posts: {
-    get: 'posts/get',
-    success: 'posts/success',
-    show: 'posts/show',
-    categories: 'posts/categories',
-  },
-  portfolio: {
-    categories: 'portfolio/categories/load',
-    item: 'portfolio/items/load',
-    tag: 'portfolio/tags/load',
-  },
-};
-
-export const EVENTS = {
-  LOADED: {
-    HOME: 'loaded/home',
-  },
-  SHOW: {
-    POST: 'show/post',
-  },
-  NAVIGATE: {
-    ABOUT: 'navigate/about',
-  },
+export const getters: GetterTree<RootState, any> = {
+    [s.posts.show]: ({post}: RootState) => {
+        return post; // todo- implement placeholder post
+    },
+    [s.topics.posts.get]: (blogState: RootState) => (categoryId: number) => {
+        return Object.values(blogState.blog.posts).filter((post) => post.post_categories);
+    },
+    [s.app.template]: (blogState: RootState) => {
+        return blogState.template;
+    },
+    [s.app.version]: ({version}: RootState) => version,
 };
 
 Vue.use(Vuex);
@@ -75,56 +104,66 @@ export default new Vuex.Store({
   state,
   mutations: {
     // init
-    [s.posts.success](state, posts: PostModel[]) {
+      [s.posts.success](blogState, posts: PostModel[]) {
       posts.forEach((post: PostModel) => {
-        Vue.set(state.blog.posts, post.id, post);
+          Vue.set(blogState.blog.posts, post.id, post);
       });
     },
-    [s.posts.categories](state, categories: PostCategory[]) {
+      [s.posts.categories](blogState, categories: PostCategory[]) {
       categories.forEach((category) => {
-        Vue.set(state.blog.categories, category.id, category);
+          Vue.set(blogState.blog.categories, category.id, category);
       });
     },
-    [s.portfolio.tag](state, tags: Tag[]) {
+      [s.portfolio.tag](blogState, tags: Tag[]) {
       tags.forEach((tag) => {
-        Vue.set(state.portfolio.tags, tag.id, tag);
+          Vue.set(blogState.portfolio.tags, tag.id, tag);
       });
     },
-    [s.portfolio.item](state, items: Item[]) {
+      [s.portfolio.item](blogState, items: Item[]) {
       items.forEach((item) => {
-        Vue.set(state.portfolio.items, item.id, item);
+          Vue.set(blogState.portfolio.items, item.id, item);
       });
     },
-    [s.portfolio.categories](state, categories: Category[]) {
+      [s.portfolio.categories](blogState, categories: Category[]) {
       categories.forEach((category) => {
-        Vue.set(state.portfolio.tags, category.id, category);
+          Vue.set(blogState.portfolio.tags, category.id, category);
       });
     },
     //
-    [s.posts.get](state, paging: Pagination) {
-      state.page = paging.page;
-      state.postPerPage = paging.size;
-    },
+      [s.posts.get](blogState, paging: Pagination) {
+          blogState.page = paging.page;
+          blogState.postPerPage = paging.size;
+      },
+
+      [s.app.template](blogState, template: Template) {
+          blogState.template = template;
+      },
     // page navigation
-    [EVENTS.LOADED.HOME](state) {
-      state.currentPage = Page.HOME;
+      [EVENTS.LOADED.HOME](blogState) {
+          blogState.currentPage = Page.HOME;
     },
-    [EVENTS.SHOW.POST](state, post: number) {
-      state.currentPage = Page.POST;
-      state.post = post;
+      [EVENTS.SHOW.POST](blogState, post: PostModel) {
+          blogState.currentPage = Page.POST;
+          blogState.post = post;
     },
-    [EVENTS.NAVIGATE.ABOUT](state) {
-      state.currentPage = Page.ABOUT;
+      [EVENTS.NAVIGATE.ABOUT](blogState) {
+          blogState.currentPage = Page.ABOUT;
     },
   },
   actions: {
+      [EVENTS.SHOW.POST](context, postId: number) {
+          const post: PostModel | null = context.state.blog.posts[postId];
+          if (post) {
+              context.commit(EVENTS.SHOW.POST, post);
+          } else {
+              cmsService.getPost(postId).subscribe(({data}: Response<PostModel[]>) => {
+                  context.commit(EVENTS.SHOW.POST, data[0]);
+              });
+          }
+      },
   },
   plugins: [pageLoad],
-  getters: {
-    getPostById: ({blog}: RootState) => (postId: number) => {
-      console.log(blog.posts);
-      return blog.posts[postId];
-    },
-  },
+    getters,
 });
+
 

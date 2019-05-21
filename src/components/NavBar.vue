@@ -13,6 +13,7 @@
         <router-link to="/" class="text-black text-base no-underline hover:no-underline font-extrabold text-xl">
           Agravic Development
         </router-link>
+        <span class="icon angular red"></span>
       </div>
 
       <div class="block lg:hidden pr-4">
@@ -44,17 +45,18 @@
 </template>
 
 <script lang="ts">
-  import {Route} from "vue-router";
-  import GlobalEvents from "vue-global-events";
-  import {Component, Prop, Vue} from "vue-property-decorator";
+  import {Route} from 'vue-router';
+  import GlobalEvents from 'vue-global-events';
+  import {Component, Prop, Vue} from 'vue-property-decorator';
 
   const h: any = document.documentElement,
         b = document.body,
         st = 'scrollTop',
         sh = 'scrollHeight';
-let scrollpos = window.scrollY;
+  let scrollPosition = window.scrollY;
   @Component({
-    components: {GlobalEvents}
+    components: {GlobalEvents},
+
   })
 export default class NavBar extends Vue {
   @Prop() public msg!: string;
@@ -76,9 +78,9 @@ export default class NavBar extends Vue {
     progress.style.setProperty('--scroll', this.scroll + '%');
 
     /*Apply classes for slide in bar*/
-    scrollpos = window.scrollY;
+    scrollPosition = window.scrollY;
 
-    if(scrollpos > 10){
+    if (scrollPosition > 10) {
       header.classList.add("bg-white");
       header.classList.add("shadow");
       navContent.classList.remove("bg-grey-lightest");

@@ -1,6 +1,6 @@
 <template>
     <div class="w-full py-24 px-6 bg-cover bg-no-repeat bg-center relative"
-         style="background-image: url('http://placehold.it/1800x800');">
+         style="background-image: url('https://picsum.photos/id/989/1800/800?grayscale');">
         <slot></slot>
     </div>
 </template>

@@ -3,10 +3,10 @@ import {Observable} from 'rxjs';
 import {Response} from '@/plugins';
 import {ajaxGetJSON} from 'rxjs/internal-compatibility';
 
-const CMS_URL = 'http://34.74.167.175/api';
+const CMS_URL = 'https://api.emjones.dev/api';
 
 export enum CMS_API {
-    POSTS = '/blog/posts',
+    POSTS = '/posts/export',
     POST_CATEGORIES = '/blog/categories',
     TAGS = '/portfolio/tags',
     ITEMS = '/portfolio/items',
@@ -50,17 +50,20 @@ export interface Item {
 
 const getCmsResource: <T>(uri: string) => Observable<Response<T>>
     = <T>(uri: string) => ajaxGetJSON<Response<T>>(`${CMS_URL}${uri}`);
-
+const getCmsResourceById: <T>(uri: string, id: string | number) => Observable<Response<T>> =
+    <T>(uri: string, id: string | number) => ajaxGetJSON<Response<T>>(`${CMS_URL}${uri}?id=${id}`);
 export class CmsService {
     public getPosts: () => Observable<Response<PostModel[]>> = () => getCmsResource<PostModel[]>(CMS_API.POSTS);
     public getPortfolioCategories: () => Observable<Response<Category[]>> =
-        () => getCmsResource<Category[]>(CMS_API.PORTFOLIO_CATEGORIES);
+        () => getCmsResource<Category[]>(CMS_API.PORTFOLIO_CATEGORIES)
     public getPostCategories: () => Observable<Response<PostCategory[]>>
-        = () => getCmsResource<PostCategory[]>(CMS_API.POST_CATEGORIES);
+        = () => getCmsResource<PostCategory[]>(CMS_API.POST_CATEGORIES)
     public getTags: () => Observable<Response<Tag[]>>
-        = () => getCmsResource<Tag[]>(CMS_API.TAGS);
+        = () => getCmsResource<Tag[]>(CMS_API.TAGS)
     public getPortfolioItems: () => Observable<Response<Item[]>>
-        = () => getCmsResource<Item[]>(CMS_API.ITEMS);
+        = () => getCmsResource<Item[]>(CMS_API.ITEMS)
+    public getPost: (postId: number) => Observable<Response<PostModel[]>>
+        = (id) => getCmsResourceById(CMS_API.POSTS, id);
 }
 
 export const cmsService = new CmsService();

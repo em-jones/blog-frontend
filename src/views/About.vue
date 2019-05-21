@@ -42,13 +42,13 @@
   </Container>
 </template>
 <script lang="ts">
-  import {Component, Vue} from "vue-property-decorator";
-  import Container from "@/components/Container.vue";
-  import {EVENTS} from "@/store";
+  import {Component, Vue} from 'vue-property-decorator';
+  import Container from '@/components/Container.vue';
+  import {EVENTS} from '@/events';
 
   const components = {Container};
   @Component({
-    components
+    components,
   })
   export default class About extends Vue {
     moutned() {

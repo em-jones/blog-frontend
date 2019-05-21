@@ -1,7 +1,9 @@
 import {Store} from 'vuex';
-import {EVENTS, RootState, s} from '@/store';
+import {RootState} from '@/store';
 import {PostModel} from '@/lib/models/PostModel';
 import {Category, cmsService, Item, PostCategory, Tag} from '@/lib/CmsService';
+import {EVENTS} from '@/events';
+import {s} from '@/symbols';
 
 export interface Response<T> {
     status_code: number;
@@ -10,12 +12,10 @@ export interface Response<T> {
 }
 
 export const pageLoad = (store: Store<RootState>) => {
-    console.log('page load called');
-
     store.subscribe((mutation) => {
         const {type} = mutation;
         switch (type) {
-            case EVENTS.LOADED.HOME || EVENTS.SHOW.POST:
+            case EVENTS.LOADED.HOME:
                 cmsService.getPosts().subscribe(({data}: Response<PostModel[]>) => {
                     store.commit(s.posts.success, data);
                 });
@@ -31,6 +31,8 @@ export const pageLoad = (store: Store<RootState>) => {
                 cmsService.getTags().subscribe(({data}: Response<Tag[]>) => {
                     store.commit(s.portfolio.tag, data);
                 });
+                break;
+            case EVENTS.SHOW.POST:
                 break;
             default:
                 break;
