@@ -43,7 +43,8 @@
       js: Category.JS,
       typescript: Category.TYPESCRIPT,
       vue: Category.VUE,
-      angular: Category.ANGULAR
+      angular: Category.ANGULAR,
+      react: Category.REACT
     }
   });
   @Component({
