@@ -33,7 +33,6 @@ import {Template} from './store';
 @import '~highlight.js/styles/github.css';
 @import "assets/fonts/kit/stylesheet.css";
 @import 'assets/styles/styles.css';
-
 #app {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

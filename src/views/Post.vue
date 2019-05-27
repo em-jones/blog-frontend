@@ -66,7 +66,7 @@
 
         updated() {
             if (this.post.id) {
-                document.querySelectorAll('pre code').forEach(block => {
+                document.querySelectorAll('pre code').forEach((block) => {
                     this.$hljs.highlightBlock(block);
                 });
             }

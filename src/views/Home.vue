@@ -15,10 +15,10 @@
         <router-link to="portfolio" class="bg-black text-white px-4 py-3 no-underline">Portfolio</router-link>
       </div>
       <CenteredQuote></CenteredQuote>
-      <PostStubs topic="js"></PostStubs>
-      <PostStubs topic="vue"></PostStubs>
-      <PostStubs topic="angular"></PostStubs>
-      <PostStubs topic="react"></PostStubs>
+      <PostStubs :topics="topics.js"></PostStubs>
+      <PostStubs :topics="topics.vue"></PostStubs>
+      <PostStubs :topics="topics.angular"></PostStubs>
+      <PostStubs :topics="topics.react"></PostStubs>
     </div>
     <div class="w-full px-6 py-12 bg-white">
 
@@ -64,12 +64,22 @@
   import PostStubs from '@/components/PostStubs.vue';
   import {Getter} from 'vuex-class';
   import {s} from '@/symbols';
+  import {Category} from '@/lib/settings';
 
+  const components = {
+    Container, Hero, PostStubs, CenteredQuote,
+  };
+  const data = () => ({
+    topics: {
+      js: Category.JS,
+      typescript: Category.TYPESCRIPT,
+      vue: Category.VUE,
+      angular: Category.ANGULAR
+    }
+  });
   @Component({
-    components: {
-      Container, Hero, PostStubs, CenteredQuote,
-    },
-
+    components,
+    data,
   })
   export default class Home extends Vue {
     @Getter(s.app.version) version!: number | string;

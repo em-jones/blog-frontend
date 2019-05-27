@@ -1,0 +1,6 @@
+## A path:
+/index.html
+  # Headers for that path:
+  Cache-Control: no-cache;
+/service-worker.js
+  Cache-Control: no-cache;
