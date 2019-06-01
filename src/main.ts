@@ -11,6 +11,9 @@ Vue.use(VueHLJS);
 Vue.config.productionTip = false;
 Vue.component('Foot', Foot);
 Vue.component('NavBar', NavBar);
+router.afterEach((to, from) => {
+  window.scrollTo(0, 0);
+});
 new Vue({
   router,
   store,

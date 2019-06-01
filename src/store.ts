@@ -17,6 +17,9 @@ export enum Page {
 }
 
 export interface RootState extends CmsData {
+  app: {
+    loaded: boolean;
+  };
   page: number;
   postPerPage: number;
   currentPage?: Page;
@@ -38,6 +41,9 @@ export interface CmsData {
 }
 
 const state: RootState = {
+  app: {
+    loaded: false
+  },
   portfolio: {categories: {}, items: {}, tags: {}},
   blog: {posts: {}, categories: {}},
   page: 1,
@@ -83,13 +89,17 @@ export const getters: GetterTree<RootState, any> = {
     [s.posts.show]: ({post}: RootState) => {
         return post; // todo- implement placeholder post
     },
-    [s.topics.posts.get]: (blogState: RootState) => (categoryId: number) => {
-        return Object.values(blogState.blog.posts).filter((post) => post.post_categories);
-    },
     [s.app.template]: (blogState: RootState) => {
         return blogState.template;
     },
     [s.app.version]: ({version}: RootState) => version,
+  [s.topics.posts.get]: (blogState: RootState) => {
+    return Object.values(blogState.blog.categories);
+  },
+  [s.posts.listByCategory]: (blogState: RootState) =>
+    (categoryId: number) =>
+      Object.values(blogState.blog.posts)
+        .filter((post) => post.post_categories.map((category) => category.id).includes(categoryId)),
 };
 
 Vue.use(Vuex);
@@ -104,9 +114,12 @@ export default new Vuex.Store({
   state,
   mutations: {
     // init
-      [s.posts.success](blogState, posts: PostModel[]) {
+    [s.app.loaded](blogState) {
+      Vue.set(blogState.app, 'loaded', true);
+    },
+    [s.posts.success](blogState, posts: PostModel[]) {
       posts.forEach((post: PostModel) => {
-          Vue.set(blogState.blog.posts, post.id, post);
+        Vue.set(blogState.blog.posts, post.id, post);
       });
     },
       [s.posts.categories](blogState, categories: PostCategory[]) {

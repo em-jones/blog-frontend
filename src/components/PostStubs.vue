@@ -1,8 +1,14 @@
 <template>
-    <div class="container max-w-xl mx-auto text-center flex flex-wrap items-start md:flex-no-wrap">
-        <VueIcon></VueIcon>
-        <PostStub :id="2"></PostStub>
+    <div class="container">
+        <div class="container text-center">
+            <i :class="`devicon-${icon}`"></i>
+            {{category}}
+        </div>
+        <div class="container max-w-xl mx-auto text-center flex flex-wrap items-start md:flex-no-wrap">
+            <PostStub v-for="post in posts" :post="post"></PostStub>
+        </div>
     </div>
+
 </template>
 
 <script lang="ts">
@@ -13,15 +19,19 @@
     import {s} from '@/symbols';
     import {PostModel} from '@/lib/models/PostModel';
     import VueIcon from '@/components/Icons/VueIcon.vue';
+    import {PostCategory} from '@/lib/CmsService';
 
     @Component({
         name: 'PostStubs',
         components: {PostStub, VueIcon}
     })
     export default class PostStubs extends Vue {
-        @Prop() topicIds!: [];
+      @Prop() topic!: PostCategory;
+      @Getter(s.posts.listByCategory) postsByTopic!: (categoryId: number) => PostModel[];
 
-        @Getter(s.topics.posts.get) postsByTopic!: PostModel[];
+      get posts(): PostModel[] {
+        return this.postsByTopic(this.topic.id);
+      }
     }
 </script>
 

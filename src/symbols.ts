@@ -4,6 +4,7 @@ export const s = {
         success: 'posts/success',
         show: 'posts/show',
         categories: 'posts/categories',
+        listByCategory: 'posts/listByCategory'
     },
     portfolio: {
         categories: 'portfolio/categories/load',
@@ -20,5 +21,6 @@ export const s = {
         {
             template: 'app/template',
             version: 'app/version',
+            loaded: 'app/loaded',
         },
 };

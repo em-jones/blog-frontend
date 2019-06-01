@@ -16,6 +16,9 @@ export const pageLoad = (store: Store<RootState>) => {
         const {type} = mutation;
         switch (type) {
             case EVENTS.LOADED.HOME:
+                if (store.state.app.loaded) {
+                    break;
+                }
                 cmsService.getPosts().subscribe(({data}: Response<PostModel[]>) => {
                     store.commit(s.posts.success, data);
                 });
@@ -31,6 +34,7 @@ export const pageLoad = (store: Store<RootState>) => {
                 cmsService.getTags().subscribe(({data}: Response<Tag[]>) => {
                     store.commit(s.portfolio.tag, data);
                 });
+                store.commit(s.app.loaded);
                 break;
             case EVENTS.SHOW.POST:
                 break;

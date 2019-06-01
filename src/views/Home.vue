@@ -15,10 +15,7 @@
         <router-link to="portfolio" class="bg-black text-white px-4 py-3 no-underline">Portfolio</router-link>
       </div>
       <CenteredQuote></CenteredQuote>
-      <PostStubs :topics="topics.js"></PostStubs>
-      <PostStubs :topics="topics.vue"></PostStubs>
-      <PostStubs :topics="topics.angular"></PostStubs>
-      <PostStubs :topics="topics.react"></PostStubs>
+      <PostStubs v-for="topic in topics" :topic="topic"></PostStubs>
     </div>
   </div>
   <!--/container-->
@@ -34,25 +31,17 @@
   import {Getter} from 'vuex-class';
   import {s} from '@/symbols';
   import {Category} from '@/lib/settings';
+  import {PostCategory} from '@/lib/CmsService';
 
   const components = {
     Container, Hero, PostStubs, CenteredQuote,
   };
-  const data = () => ({
-    topics: {
-      js: Category.JS,
-      typescript: Category.TYPESCRIPT,
-      vue: Category.VUE,
-      angular: Category.ANGULAR,
-      react: Category.REACT
-    }
-  });
   @Component({
-    components,
-    data,
+    components
   })
   export default class Home extends Vue {
     @Getter(s.app.version) version!: number | string;
+    @Getter(s.topics.posts.get) topics!: PostCategory[];
     mounted() {
       this.$store.commit(EVENTS.LOADED.HOME);
     }

@@ -5,9 +5,9 @@
             <!--Title-->
             <div class="font-sans">
                 <span class="text-base md:text-sm text-teal font-bold">&lt;</span>
-                <router-link :to="previousLocation"
+                <router-link to="/"
                              class="text-base md:text-sm text-teal font-bold no-underline hover:underline">
-                    BACK TO {{ previousName }}
+                    BACK TO HOME
                 </router-link>
                 <h1 class="font-sans break-normal text-black pt-6 pb-2 text-3xl md:text-4xl">{{post.title}}</h1>
                 <p class="text-sm md:text-base font-normal text-grey-dark">Published {{publishedText}}</p>
@@ -60,10 +60,9 @@
         @Getter(s.posts.show) post!: PostModel;
 
         mounted() {
-            const postId = this.$route.params.id;
-            this.$store.dispatch(EVENTS.SHOW.POST, postId);
+          const postId = this.$route.params.id;
+          this.$store.dispatch(EVENTS.SHOW.POST, postId);
         }
-
         updated() {
             if (this.post.id) {
                 document.querySelectorAll('pre code').forEach((block) => {
